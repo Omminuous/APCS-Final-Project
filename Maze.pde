@@ -43,11 +43,6 @@ void draw() {
 }
 
 void update() {
-  for (char[] r : maze) {
-  for (char c : r) System.out.print(c + " ");
-  System.out.println();  
-  }
-
   for (int i = 0; i < mazeSize + 2; i++) {
     for (int j = 0; j < mazeSize + 2; j++) {
       if(maze[i][j] == 'c') fill(#F4EEFF);
@@ -112,7 +107,6 @@ Object[] generateMaze(int size) {
   if (notEdge) maze[int(tentative.x)][int(tentative.y)] = 'c';
 
   wallList.remove(item);
-  System.out.println(wallList);
   }
  
   for (int i = 1; i < size + 1; i++) {
