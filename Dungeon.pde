@@ -85,7 +85,7 @@ void keyPressed(){
       player.move(maze, key);
       break;
     case 'e':
-      // interact stuff
+      player.portal();
       break;
   }
   update();

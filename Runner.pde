@@ -70,4 +70,19 @@ public class Runner {
     textSize(20);
     return status;
   }
+  
+  public void portal(){
+     if(frontBlock() == "PORTAL"){
+       floor++;
+       setup();
+       draw();
+     }
+     else if(frontBlock() == "CHEST"){
+       coin += (int) (Math.random() * 1000);
+       fill(#EEEEEE);
+       maze[int(runner.y + dir.y)][int(runner.x + dir.x)] = 'c';
+       fill(#F4EEFF);
+       drawSquare(int(runner.x + dir.x), int(runner.y + dir.y));
+     }
+  }
 }
