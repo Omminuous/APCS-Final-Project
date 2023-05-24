@@ -59,3 +59,14 @@ void mouseWheel(MouseEvent event) {
   if (slot > 4 || slot < 0) slot = 5 - abs(slot);
   inventory();
 }
+
+void optionsOpen() {
+   option = true;
+   fill(#43A6C6);
+   rect(155, 220, 500, 350);
+   fill(#ADD8E6);
+   rect(185, 250, 440, 290);
+   fill(#000000);
+   textSize(60);
+   text("OPTIONS", 290, 305);
+}

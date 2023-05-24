@@ -13,6 +13,8 @@ PVector treasure;
 ArrayList<String> inventory;
 Runner player;
 PImage cS;
+boolean menu = false;
+boolean option = false;
 
 void setup() {
   size(810, 930);

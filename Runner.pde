@@ -73,9 +73,10 @@ public class Runner {
   
   public void portal(){
      if(frontBlock() == "PORTAL"){
-       floor++;
-       setup();
-       draw();
+       optionsOpen();
+       //floor++;
+       //setup();
+       //draw();
      }
      else if(frontBlock() == "CHEST"){
        coin += (int) (Math.random() * 1000);
