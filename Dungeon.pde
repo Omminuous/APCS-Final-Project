@@ -11,6 +11,8 @@ PVector start;
 char[][] maze;
 Runner player;
 PImage cS;
+boolean menu = false;
+boolean hudScreen = true;
 boolean initial = true;
 
 // Items
@@ -22,6 +24,37 @@ File folder;
 String[] sprites;
 
 void setup() {
+  size(810, 930);
+  noStroke();
+  textSize(20);
+  background(#000000);
+  surface.setTitle("The Maze Game");
+  font = createFont("assets/Minecraft Regular.otf", 40);
+  textFont(font);
+  
+  //title screen
+  fill(#FFFFFF);
+  textSize(150);
+  text("THE MAZE", 50, 150);
+  text("GAME", 225, 300);
+  textSize(40);
+  text("Interactable Keys:", 20, 370);
+  rect(20, 380, 380, 5);
+  text("Press \"E\" to Interact With Objects", 20, 430);
+  text("Press \"W\" to Move UP", 20, 470);
+  text("Press \"A\" to Move LEFT", 20, 510);
+  text("Press \"S\" to Move DOWN", 20, 550);
+  text("Press \"D\" to Move RIGHT", 20, 590);
+  text("Use Scroll Wheel to Select Item in Hand", 20, 630);
+  textSize(85);
+  fill(#FFFFFF);
+  rect(55, 670, 700, 230);
+  fill(#E8B923);
+  text("PRESS P TO", 170, 775);
+  text("START GAME", 170, 855);
+}
+
+void generate() {
   size(810, 930);
   noStroke();
   textSize(20);
@@ -70,13 +103,16 @@ void setup() {
   fill(#F38181);
   drawSquare(end, mazeSize);
   
-  if (initial) {
+  player = new Runner(1, 1);
+  if(initial){
     initial = false;
-    player = new Runner(1, 1);
     inventory.add(items.get("common").get(0));
   }
-  
   hud();
+}
+
+void draw() {
+  
 }
 
 Item chest() {
@@ -97,22 +133,35 @@ void update() {
 }
 
 void keyPressed(){
-  switch (key) {
-    case 'w':
-    case 'a':
-    case 's':
-    case 'd':
-      player.move(maze, key);
-      break;
-    case 'q':
-      player.drop();
-      break;
-    case 'e':
-      player.interact();
-      break;
+  if(!hudScreen){
+    switch (key) {
+      case 'w':
+      case 'a':
+      case 's':
+      case 'd':
+        player.move(maze, key);
+        break;
+      case 'q':
+        player.drop();
+        break;
+      case 'e':
+        player.interact();
+        break;
+      case 'y':
+      case 'n':
+        player.options(key);
+        return;
+    }
+    update();
   }
-  update();
-}
-
-void draw() {
+  else{
+    switch(key){
+      case 'p':
+        hudScreen = false;
+        coin = 0;
+        floor = 1; 
+        generate();
+        draw();
+    }
+  }
 }

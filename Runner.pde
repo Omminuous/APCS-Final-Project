@@ -135,17 +135,32 @@ public class Runner {
     return;
   }
   
-  public void portal() {
-     if (frontBlock() == "PORTAL") {
-       floor++;
-       setup();
-       draw();
-     } else if (frontBlock() == "CHEST") {
+  public void portal(){
+     if(frontBlock() == "PORTAL"){
+       optionsOpen();
+     }
+     else if(frontBlock() == "CHEST"){
        coin += (int) (Math.random() * 1000);
        fill(#EEEEEE);
        maze[int(runner.y + dir.y)][int(runner.x + dir.x)] = 'c';
        fill(#F4EEFF);
        drawSquare(int(runner.x + dir.x), int(runner.y + dir.y));
      }
+  }
+  
+  public void options(char k){
+    if(menu){
+      if(k == 'y'){
+        floor++;
+        generate();
+        draw();
+      }
+      else if(k == 'n'){
+        endScreen();
+        hudScreen = true;
+        surface.setTitle("Game Over");
+      }
+      menu = false;
+    }
   }
 }
