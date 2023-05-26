@@ -11,6 +11,7 @@ PVector start;
 char[][] maze;
 Runner player;
 PImage cS;
+boolean initial = true;
 
 // Items
 ArrayList<Item> inventory = new ArrayList<>();
@@ -21,7 +22,6 @@ File folder;
 String[] sprites;
 
 void setup() {
-  // initialize window
   size(810, 930);
   noStroke();
   textSize(20);
@@ -38,20 +38,18 @@ void setup() {
   sprites = folder.list();
   for (String s : new String[]{"common", "uncommon", "rare", "epic", "legendary"}) items.put(s, new ArrayList<>());
   for (String s : sprites) items.get(s.substring(0, s.indexOf("-"))).add(new Item(s.substring(0, s.indexOf("-")) + " " + s.substring(s.indexOf("-") + 1, s.length() - 4), loadImage("sprites/" + s)));
-
-  inventory.add(items.get("uncommon").get(3));
-
+  
   // Maze setup + Destructuring
   Object[] m = generateMaze(mazeSize);
   maze = (char[][]) m[0];
   end = (int) m[1];
-  maze[1][2] = 'h';
+
   for (int i = 0; i < mazeSize + 2; i++) {
     for (int j = 0; j < mazeSize + 2; j++) {
       if (maze[i][j] == 'c') {
         fill(#F4EEFF);
-        if (isDeadEnd(maze, new PVector(j, i)) && (int) (Math.random() * 2) == 1) {
-          if ((int) (Math.random() * 2) == 1) {
+        if (isDeadEnd(maze, new PVector(j, i)) && (int) (Math.random() * 8) == 1) {
+          if ((int) (Math.random() * 5) == 1) {
             maze[i][j] = 'h';
             fill(#AD8B73);
           } else {
@@ -72,7 +70,12 @@ void setup() {
   fill(#F38181);
   drawSquare(end, mazeSize);
   
-  player = new Runner(1, 1);
+  if (initial) {
+    initial = false;
+    player = new Runner(1, 1);
+    inventory.add(items.get("common").get(0));
+  }
+  
   hud();
 }
 
