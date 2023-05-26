@@ -1,13 +1,29 @@
+void hud() {
+  status();
+  purse();
+  health();
+  inventory();
+  items();
+}
+
 void status() {
   fill(#F9F7F7);
   text(player.frontBlock(), 8, 21);
+}
+
+void itemText(String s) {
+  fill(0);
+  textSize(30);
+  textAlign(CENTER);
+  text(s, 400, 845);
+  textAlign(BASELINE);
 }
 
 void interactable(String s) {
   fill(0);
   textSize(30);
   textAlign(CENTER);
-  text(s + " - Press E to interact", 400, 855);
+  text(s + " - Press E to interact", 400, 845);
   textAlign(BASELINE);
 }
 
@@ -21,37 +37,53 @@ void health() {
   stroke(#212A3E);
   
   fill(#ACB1D6);
-  for (int i = 0; i < 3; i++) rect(720 - 60 * i, 875, 40, 40);
+  for (int i = 0; i < 3; i++) rect(720 - 70 * i, 865, 50, 50);
   
   fill(#FC4F00);
-  for (int i = 0; i < floor(health); i++) rect(600 + 60 * i, 875, 40, 40);
-  if (floor(health) != health) rect(600 + floor(health) * 60, 875, 20, 40);
+  for (int i = 0; i < floor(health); i++) rect(580 + 70 * i, 865, 50, 50);
+  if (floor(health) != health) rect(580 + floor(health) * 70, 865, 25, 50);
   
   noStroke();
 }
 
 void inventory() {
   fill(#EEEEEE);
-  rect(0, 860, 350, 70);
+  rect(0, 860, 390, 70);
   strokeWeight(2);
   stroke(#212A3E);
   
   fill(#EEE3CB);
-  for (int i = 0; i < 5; i++) rect(50 + i * 60, 875, 40, 40);
+  for (int i = 0; i < 5; i++) rect(50 + i * 70, 865, 50, 50);
+  
+  for (int i = 0; i < inventory.size(); i++) {
+    Item item = inventory.get(i);
+    image(item.getImage(), 50 + i * 70, 865, 50, 50);
+  }
   
   strokeWeight(4);
   stroke(#FF2E63);
-  rect(49 + slot * 60, 874, 42, 42);
+  noFill();
+  rect(49 + slot * 70, 864, 52, 52);
   noStroke();
+  clearText();
+  if (slot < inventory.size()) itemText(inventory.get(slot).getName());
 }
 
 void purse() {
   fill(#EEEEEE);
   rect(350, 860, 250, 70);
-  image(cS, 373, 875);
+  image(cS, 400, 866);
   fill(#222831);
-  textSize(40);
-  text(coin, 425, 908);
+  textSize(50);
+  text(coin, 455, 908);
+}
+
+void items() {
+  fill(#F4EEFF);
+  for (PVector p : ground.keySet()) {
+    Item i = ground.get(p);
+    image(i.getImage(), int(p.x) * 30 - 1, int(p.y) * 30 - 1);
+  }
 }
 
 void mouseWheel(MouseEvent event) {

@@ -1,16 +1,4 @@
-ArrayList<PVector> neighborCells(PVector p, int size, int dist) {
-  ArrayList<PVector> neighbors = new ArrayList<>();
-  int x = (int) p.x;
-  int y = (int) p.y;
-
-  for (int value : new int[]{-1 * dist, dist}) {
-    if (x + value > 0 && x + value < size + dist) neighbors.add(new PVector(x + value, y));
-    if (y + value > 0 && y + value < size + dist) neighbors.add(new PVector(x, y + value));
-  }
-
-  return neighbors;
-}
-
+// implementation of Prim's maze algorithm
 Object[] generateMaze(int size) {
   char[][] maze = new char[size + 2][size + 2];
   for (int i = 0; i < size + 2; i++) {
@@ -70,11 +58,24 @@ Object[] generateMaze(int size) {
   return new Object[]{maze, ends.get((int) (Math.random() * ends.size()))};
 }
 
+ArrayList<PVector> neighborCells(PVector p, int size, int dist) {
+  ArrayList<PVector> neighbors = new ArrayList<>();
+  int x = (int) p.x;
+  int y = (int) p.y;
+
+  for (int value : new int[]{-1 * dist, dist}) {
+    if (x + value > 0 && x + value < size + 2) neighbors.add(new PVector(x + value, y));
+    if (y + value > 0 && y + value < size + 2) neighbors.add(new PVector(x, y + value));
+  }
+
+  return neighbors;
+}
+
 boolean isDeadEnd(char[][] maze, PVector p) {
   int count = 0;
   ArrayList<PVector> nearby = neighborCells(p, mazeSize, 1);
-  for (PVector n : nearby) count += maze[int(n.y)][int(n.x)] == 'c' ? 1 : 0;
-  return count == 1;
+  for (PVector n : nearby) count += maze[int(n.y)][int(n.x)] == 'w' ? 1 : 0;
+  return count == 3;
 }
 
 void drawSquare(int x, int y) {
