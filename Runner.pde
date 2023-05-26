@@ -74,9 +74,6 @@ public class Runner {
   public void portal(){
      if(frontBlock() == "PORTAL"){
        optionsOpen();
-       //floor++;
-       //setup();
-       //draw();
      }
      else if(frontBlock() == "CHEST"){
        coin += (int) (Math.random() * 1000);
@@ -91,12 +88,13 @@ public class Runner {
     if(menu){
       if(k == 'y'){
         floor++;
-        setup();
+        generate();
         draw();
       }
       else if(k == 'n'){
         endScreen();
-        gameOver = true;
+        hudScreen = true;
+        surface.setTitle("Game Over");
       }
       menu = false;
     }

@@ -14,9 +14,40 @@ ArrayList<String> inventory;
 Runner player;
 PImage cS;
 boolean menu = false;
-boolean gameOver = false;
+boolean hudScreen = true;
 
 void setup() {
+  size(810, 930);
+  noStroke();
+  textSize(20);
+  background(#000000);
+  surface.setTitle("The Maze Game");
+  font = createFont("Minecraft Regular.otf", 40);
+  textFont(font);
+  
+  //title screen
+  fill(#FFFFFF);
+  textSize(150);
+  text("THE MAZE", 50, 150);
+  text("GAME", 225, 300);
+  textSize(40);
+  text("Interactable Keys:", 20, 370);
+  rect(20, 380, 380, 5);
+  text("Press \"E\" to Interact With Objects", 20, 430);
+  text("Press \"W\" to Move UP", 20, 470);
+  text("Press \"A\" to Move LEFT", 20, 510);
+  text("Press \"S\" to Move DOWN", 20, 550);
+  text("Press \"D\" to Move RIGHT", 20, 590);
+  text("Use Scroll Wheel to Select Item in Hand", 20, 630);
+  textSize(85);
+  fill(#FFFFFF);
+  rect(55, 670, 700, 230);
+  fill(#E8B923);
+  text("PRESS P TO", 170, 775);
+  text("START GAME", 170, 855);
+}
+
+void generate() {
   size(810, 930);
   noStroke();
   textSize(20);
@@ -79,7 +110,7 @@ void update() {
 }
 
 void keyPressed(){
-  if(!gameOver){
+  if(!hudScreen){
     switch (key) {
       case 'w':
       case 'a':
@@ -100,10 +131,10 @@ void keyPressed(){
   else{
     switch(key){
       case 'p':
-        gameOver = false;
+        hudScreen = false;
         coin = 0;
         floor = 1; 
-        setup();
+        generate();
         draw();
     }
   }

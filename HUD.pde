@@ -55,9 +55,11 @@ void purse() {
 }
 
 void mouseWheel(MouseEvent event) {
-  slot += (int) event.getCount();
-  if (slot > 4 || slot < 0) slot = 5 - abs(slot);
-  inventory();
+  if(!hudScreen) {
+    slot += (int) event.getCount();
+     if (slot > 4 || slot < 0) slot = 5 - abs(slot);
+    inventory();
+  }
 }
 
 void optionsOpen() {
@@ -95,7 +97,6 @@ void endScreen() {
   fill(#FFFFFF);
   rect(55, 650, 700, 230);
   fill(#E8B923);
-  textSize(85);
   text("PRESS P TO", 170, 745);
   text("PLAY AGAIN", 170, 825);
 }
