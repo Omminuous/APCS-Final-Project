@@ -8,12 +8,25 @@ public class Runner {
   }
 
   public void move(char[][] maze, char k) {
-    if (k == 'a') dir = new PVector(-1, 0);
-    else if (k == 'd') dir = new PVector(1, 0);
-    else if (k == 'w') dir = new PVector(0, -1);
-    else if (k == 's') dir = new PVector(0, 1);
-    if (moveAvaliable(maze)) {
-      maze[(int) runner.y][(int) runner.x] = 'c';
+    // movement logic
+    switch (k) {
+      case 'a':
+        dir = new PVector(-1, 0);
+        break;
+      case 'd':
+        dir = new PVector(1, 0);
+        break;
+      case 'w':
+        dir = new PVector(0, -1);
+        break;
+      case 's':
+        dir = new PVector(0, 1);
+        break;
+    }
+
+    // movement interactions
+    if (moveAvaliable()) {
+      maze[(int) runner.y][(int) runner.x] = ground.containsKey(runner) ? 'i' : 'c';
       fill(#F4EEFF);
       rect(runner.x * 30, runner.y * 30, 30, 30);
       
@@ -25,8 +38,12 @@ public class Runner {
     }
   }
 
-  public boolean moveAvaliable(char[][] maze) {
-    switch (maze[int(runner.y + dir.y)][int(runner.x + dir.x)]) {
+  public char front() {
+    return maze[int(runner.y + dir.y)][int(runner.x + dir.x)];
+  }
+
+  public boolean moveAvaliable() {
+    switch (front()) {
       case 'w':
       case 'p':
       case 'h':
@@ -36,20 +53,19 @@ public class Runner {
     }
   }
   
-  public PVector getDir() {
-    return dir;
+  public PVector frontVector() {
+    return new PVector(runner.x + dir.x, runner.y + dir.y);
   }
 
   public String frontBlock() {
     String status = "";
-    switch (maze[int(runner.y + dir.y)][int(runner.x + dir.x)]) {
+    clearText();
+    switch (front()) {
       case 'c':
         status = "FLOOR";
-        clearText();
         break;
       case 'w':
         status = "WALL";
-        clearText();
         break;
       case 'p':
         status = "PORTAL";
@@ -57,7 +73,11 @@ public class Runner {
         break;
       case 'o':
         status = "COIN";
-        clearText();
+        break;
+      case 'i':
+        status = "ITEM";
+        interactable(ground.get(frontVector()).getName());
+        interactable("ASD");
         break;
       case 'h':
         status = "CHEST";
@@ -71,13 +91,56 @@ public class Runner {
     return status;
   }
   
-  public void portal(){
-     if(frontBlock() == "PORTAL"){
+  public void interact() {
+    switch (front()) {
+      case 'h':
+        maze[int(runner.y + dir.y)][int(runner.x + dir.x)] = 'i';
+        fill(#F4EEFF);
+        drawSquare(int(runner.x + dir.x), int(runner.y + dir.y));
+        ground.put(new PVector(runner.x + dir.x, runner.y + dir.y), chest());
+        return;
+      case 'i':
+        if (inventory.size() == 5) {
+          Item swap = inventory.remove(slot);
+          inventory.add(slot, ground.get(player.frontVector()));
+          ground.remove(player.frontVector());
+          ground.put(player.frontVector(), swap);
+          
+          fill(#F4EEFF);
+          drawSquare(int(frontVector().x), int(frontVector().y));
+          break;
+        }
+        
+        inventory.add(ground.get(player.frontVector()));
+        ground.remove(player.frontVector());
+        maze[int(runner.y + dir.y)][int(runner.x + dir.x)] = 'c';
+        fill(#F4EEFF);
+        drawSquare(int(runner.x + dir.x), int(runner.y + dir.y));
+        return;
+      case 'p':
+        portal();
+    }
+    if (inventory.size() > slot && inventory.get(slot).getName().equals("uncommon potion")) {
+      health = min(3, health + 1);
+      inventory.remove(slot);
+    }
+  }
+  
+  public void drop() {
+    if (inventory.size() == 0 || ground.containsKey(frontVector())) return;
+    fill(#F4EEFF);
+    drawSquare(int(runner.x + dir.x), int(runner.y + dir.y));
+    ground.put(frontVector(), inventory.remove(slot));
+    maze[int(frontVector().y)][int(frontVector().x)] = 'i';
+    return;
+  }
+  
+  public void portal() {
+     if (frontBlock() == "PORTAL") {
        floor++;
        setup();
        draw();
-     }
-     else if(frontBlock() == "CHEST"){
+     } else if (frontBlock() == "CHEST") {
        coin += (int) (Math.random() * 1000);
        fill(#EEEEEE);
        maze[int(runner.y + dir.y)][int(runner.x + dir.x)] = 'c';
