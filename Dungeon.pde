@@ -14,7 +14,7 @@ ArrayList<String> inventory;
 Runner player;
 PImage cS;
 boolean menu = false;
-boolean option = false;
+boolean gameOver = false;
 
 void setup() {
   size(810, 930);
@@ -79,16 +79,32 @@ void update() {
 }
 
 void keyPressed(){
-  switch (key) {
-    case 'w':
-    case 'a':
-    case 's':
-    case 'd':
-      player.move(maze, key);
-      break;
-    case 'e':
-      player.portal();
-      break;
+  if(!gameOver){
+    switch (key) {
+      case 'w':
+      case 'a':
+      case 's':
+      case 'd':
+        player.move(maze, key);
+        break;
+      case 'e':
+        player.portal();
+        break;
+      case 'y':
+      case 'n':
+        player.options(key);
+        return;
+    }
+    update();
   }
-  update();
+  else{
+    switch(key){
+      case 'p':
+        gameOver = false;
+        coin = 0;
+        floor = 1; 
+        setup();
+        draw();
+    }
+  }
 }

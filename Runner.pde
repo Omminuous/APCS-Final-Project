@@ -86,4 +86,19 @@ public class Runner {
        drawSquare(int(runner.x + dir.x), int(runner.y + dir.y));
      }
   }
+  
+  public void options(char k){
+    if(menu){
+      if(k == 'y'){
+        floor++;
+        setup();
+        draw();
+      }
+      else if(k == 'n'){
+        endScreen();
+        gameOver = true;
+      }
+      menu = false;
+    }
+  }
 }
