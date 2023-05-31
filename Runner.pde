@@ -164,8 +164,23 @@ public class Runner {
     return;
   }
   
-  public void portal() {
-     floor++;
-     setup();
+  public void portal(){
+optionsOpen();
+  }
+  
+  public void options(char k){
+    if (menu){
+      if (k == 'y'){
+        floor++;
+        generate();
+        draw();
+      }
+      else if (k == 'n'){
+        endScreen();
+        hudScreen = true;
+        surface.setTitle("Game Over");
+      }
+      menu = false;
+    }
   }
 }
