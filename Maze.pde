@@ -78,6 +78,10 @@ boolean isDeadEnd(char[][] maze, PVector p) {
   return count == 3;
 }
 
-void drawSquare(int x, int y) {
-  rect(x * size, y * size, size, size);
+void drawSquare(float x, float y) {
+  rect(int(x) * size, int(y) * size, size, size);
+}
+
+void drawSquare(PVector p) {
+  drawSquare(p.x, p.y);
 }

@@ -1,8 +1,8 @@
 void hud() {
-  status();
   purse();
   health();
   inventory();
+  status();
   items();
 }
 
@@ -19,11 +19,12 @@ void itemText(String s) {
   textAlign(BASELINE);
 }
 
-void interactable(String s) {
+void interactable(String s, String option) {
+  clearText();
   fill(0);
   textSize(30);
   textAlign(CENTER);
-  text(s + " - Press E to interact", 400, 845);
+  text(s + " - Press E to " + option, 400, 845);
   textAlign(BASELINE);
 }
 
@@ -53,11 +54,10 @@ void inventory() {
   stroke(#212A3E);
   
   fill(#EEE3CB);
-  for (int i = 0; i < 5; i++) rect(50 + i * 70, 865, 50, 50);
   
-  for (int i = 0; i < inventory.size(); i++) {
-    Item item = inventory.get(i);
-    image(item.getImage(), 50 + i * 70, 865, 50, 50);
+  for (int i = 0; i < 5; i++) {
+    rect(50 + i * 70, 865, 50, 50);
+    if (inventory[i] != null) image(inventory[i].getImage(), 50 + i * 70, 865, 50, 50);
   }
   
   strokeWeight(4);
@@ -66,7 +66,7 @@ void inventory() {
   rect(49 + slot * 70, 864, 52, 52);
   noStroke();
   clearText();
-  if (slot < inventory.size()) itemText(inventory.get(slot).getName());
+  if (inventory[slot] != null) itemText(inventory[slot].getName());
 }
 
 void purse() {
@@ -80,14 +80,11 @@ void purse() {
 
 void items() {
   fill(#F4EEFF);
-  for (PVector p : ground.keySet()) {
-    Item i = ground.get(p);
-    image(i.getImage(), int(p.x) * 30 - 1, int(p.y) * 30 - 1);
-  }
+  for (PVector p : ground.keySet()) image(ground.get(p).getImage(), int(p.x) * 30 - 1, int(p.y) * 30 - 1);
 }
 
 void mouseWheel(MouseEvent event) {
-  if(!hudScreen) {
+  if (!hudScreen) {
     slot += (int) event.getCount();
      if (slot > 4 || slot < 0) slot = 5 - abs(slot);
     inventory();
