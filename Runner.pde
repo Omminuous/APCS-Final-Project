@@ -59,29 +59,35 @@ public class Runner {
 
   public String frontBlock() {
     String status = "";
-    clearText();
     switch (front()) {
       case 'c':
         status = "FLOOR";
+        if (ground.containsKey(runner)) {
+          interactable(ground.get(runner).getName(), "pickup");
+          status = "ITEM";
+        }
         break;
       case 'w':
+        if (ground.containsKey(runner)) {
+          interactable(ground.get(runner).getName(), "open");
+          status = "ITEM";
+        }
         status = "WALL";
         break;
       case 'p':
         status = "PORTAL";
-        interactable("A glowing portal");
+        interactable("A glowing portal", "enter");
         break;
       case 'o':
         status = "COIN";
         break;
       case 'i':
         status = "ITEM";
-        interactable(ground.get(frontVector()).getName());
-        interactable("ASD");
+        interactable(ground.get(frontVector()).getName(), "pickup");
         break;
       case 'h':
         status = "CHEST";
-        interactable("A treasure chest");
+        interactable("A treasure chest", "open");
         break;
       default:
         status = "UNKNOWN";
@@ -96,56 +102,70 @@ public class Runner {
       case 'h':
         maze[int(runner.y + dir.y)][int(runner.x + dir.x)] = 'i';
         fill(#F4EEFF);
-        drawSquare(int(runner.x + dir.x), int(runner.y + dir.y));
+        drawSquare(frontVector());
         ground.put(new PVector(runner.x + dir.x, runner.y + dir.y), chest());
         return;
       case 'i':
-        if (inventory.size() == 5) {
-          Item swap = inventory.remove(slot);
-          inventory.add(slot, ground.get(player.frontVector()));
-          ground.remove(player.frontVector());
-          ground.put(player.frontVector(), swap);
-          
-          fill(#F4EEFF);
-          drawSquare(int(frontVector().x), int(frontVector().y));
-          break;
-        }
-        
-        inventory.add(ground.get(player.frontVector()));
-        ground.remove(player.frontVector());
-        maze[int(runner.y + dir.y)][int(runner.x + dir.x)] = 'c';
-        fill(#F4EEFF);
-        drawSquare(int(runner.x + dir.x), int(runner.y + dir.y));
+        pickup(frontVector());
         return;
       case 'p':
         portal();
+        break;
     }
-    if (inventory.size() > slot && inventory.get(slot).getName().equals("uncommon potion")) {
+    
+    if (ground.containsKey(runner)) pickup(runner);
+    if (inventory[slot] != null && inventory[slot].getName().equals("uncommon potion")) {
       health = min(3, health + 1);
-      inventory.remove(slot);
+      inventory[slot] = null;
+      slots--;
     }
   }
   
+  private void pickup(PVector p) {
+    fill(p.equals(runner) ? #95E1D3 : #F4EEFF); 
+    if (slots == 5) {
+      Item swap = inventory[slot];
+      inventory[slot] = ground.remove(p);
+      ground.put(p, swap);
+      
+      drawSquare(frontVector());
+      return;
+    }
+    
+    if (inventory[slot] != null) {
+      int i = 0;
+      while (inventory[i] != null) i++;
+      slot = i;
+    }
+
+    inventory[slot] = ground.remove(p);
+    slots++;
+    maze[int(p.y)][int(p.x)] = 'c';
+    drawSquare(p);
+  }
+  
   public void drop() {
-    if (inventory.size() == 0 || ground.containsKey(frontVector())) return;
-    fill(#F4EEFF);
-    drawSquare(int(runner.x + dir.x), int(runner.y + dir.y));
-    ground.put(frontVector(), inventory.remove(slot));
-    maze[int(frontVector().y)][int(frontVector().x)] = 'i';
+    if (inventory[slot] == null) return;
+    if (!ground.containsKey(runner)) {
+        ground.put(runner, inventory[slot]);
+        inventory[slot] = null;
+        slots--;
+        maze[int(runner.y)][int(runner.x)] = 'i';
+        return;
+    }
+    if (front() == 'c') {
+      fill(#F4EEFF);
+      drawSquare(frontVector());
+      ground.put(frontVector(), inventory[slot]);
+      inventory[slot] = null;
+      slots--;
+      maze[int(frontVector().y)][int(frontVector().x)] = 'i'; 
+    }
     return;
   }
   
   public void portal() {
-     if (frontBlock() == "PORTAL") {
-       floor++;
-       setup();
-       draw();
-     } else if (frontBlock() == "CHEST") {
-       coin += (int) (Math.random() * 1000);
-       fill(#EEEEEE);
-       maze[int(runner.y + dir.y)][int(runner.x + dir.x)] = 'c';
-       fill(#F4EEFF);
-       drawSquare(int(runner.x + dir.x), int(runner.y + dir.y));
-     }
+     floor++;
+     setup();
   }
 }
