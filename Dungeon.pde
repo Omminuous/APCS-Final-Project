@@ -37,26 +37,7 @@ void setup() {
   textFont(font);
   
   //title screen
-  fill(#FFFFFF);
-  textSize(150);
-  text("THE MAZE", 50, 150);
-  text("GAME", 225, 300);
-  textSize(30);
-  text("Interactable Keys:", 20, 350);
-  rect(20, 360, 300, 3);
-  text("Press \"E\" to Interact With Objects", 20, 395);
-  text("Press \"W\" to Move UP", 20, 435);
-  text("Press \"A\" to Move LEFT", 20, 475);
-  text("Press \"S\" to Move DOWN", 20, 515);
-  text("Press \"D\" to Move RIGHT", 20, 555);
-  text("Press \"Q\" to Drop Item", 20, 595);
-  text("Use Scroll Wheel to Select Item in Hand", 20, 635);
-  textSize(85);
-  fill(#FFFFFF);
-  rect(55, 670, 700, 230);
-  fill(#E8B923);
-  text("PRESS P TO", 170, 775);
-  text("START GAME", 170, 855);
+  image(loadImage("assets/menu.png"), 0, 0);
 }
 
 void generate() {
@@ -147,9 +128,10 @@ void update() {
   hud();
 }
 
-void keyPressed(){
+void keyPressed () {
   // regular input
   if (!hudScreen) {
+    if (Character.isDigit(key)) if (key > '0' && key < '6') slot = key - 49;
     switch (key) {
       case 'w':
       case 'a':
@@ -181,4 +163,12 @@ void keyPressed(){
         draw();
     }
   }
+}
+
+void mouseClicked() {
+  if (menu || hudScreen) return;
+  if (mouseButton == LEFT) System.out.println("left");
+  else if (mouseButton == RIGHT) player.interact();
+  else player.drop();
+  update();
 }

@@ -59,19 +59,16 @@ public class Runner {
 
   public String frontBlock() {
     String status = "";
+    if (ground.containsKey(runner)) {
+      interactable(ground.get(runner).getName(), "pickup");
+      status = "ITEM";
+    }
     switch (front()) {
       case 'c':
         status = "FLOOR";
-        if (ground.containsKey(runner)) {
-          interactable(ground.get(runner).getName(), "pickup");
-          status = "ITEM";
-        }
+
         break;
       case 'w':
-        if (ground.containsKey(runner)) {
-          interactable(ground.get(runner).getName(), "open");
-          status = "ITEM";
-        }
         status = "WALL";
         break;
       case 'p':
@@ -98,6 +95,11 @@ public class Runner {
   }
   
   public void interact() {
+    if (ground.containsKey(runner)) {
+      pickup(runner);
+      return;
+    }
+    
     switch (front()) {
       case 'h':
         maze[int(runner.y + dir.y)][int(runner.x + dir.x)] = 'i';
@@ -109,11 +111,10 @@ public class Runner {
         pickup(frontVector());
         return;
       case 'p':
-        portal();
+        optionsOpen();
         break;
     }
     
-    if (ground.containsKey(runner)) pickup(runner);
     if (inventory[slot] != null && inventory[slot].getName().equals("uncommon potion")) {
       health = min(3, health + 1);
       inventory[slot] = null;
@@ -147,13 +148,11 @@ public class Runner {
   public void drop() {
     if (inventory[slot] == null) return;
     if (!ground.containsKey(runner)) {
-        ground.put(runner, inventory[slot]);
-        inventory[slot] = null;
-        slots--;
-        maze[int(runner.y)][int(runner.x)] = 'i';
-        return;
-    }
-    if (front() == 'c') {
+      ground.put(runner, inventory[slot]);
+      inventory[slot] = null;
+      slots--;
+      maze[int(runner.y)][int(runner.x)] = 'i';
+    } else if (front() == 'c') {
       fill(#F4EEFF);
       drawSquare(frontVector());
       ground.put(frontVector(), inventory[slot]);
@@ -161,21 +160,20 @@ public class Runner {
       slots--;
       maze[int(frontVector().y)][int(frontVector().x)] = 'i'; 
     }
-    return;
   }
   
-  public void portal(){
-optionsOpen();
+  public PVector coords() {
+    return runner;
   }
   
-  public void options(char k){
-    if (menu){
-      if (k == 'y'){
+  public void options(char k) {
+    if (menu) {
+      if (k == 'y') {
         floor++;
         generate();
         draw();
       }
-      else if (k == 'n'){
+      else if (k == 'n') {
         endScreen();
         hudScreen = true;
         surface.setTitle("Game Over");

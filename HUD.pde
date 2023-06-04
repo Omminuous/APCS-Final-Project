@@ -61,7 +61,7 @@ void inventory() {
   }
   
   strokeWeight(4);
-  stroke(#FF2E63);
+  stroke(inventory[slot] != null ? rarity.get(inventory[slot].getName().split(" ")[0]) : #FF2E63);
   noFill();
   rect(49 + slot * 70, 864, 52, 52);
   noStroke();
@@ -79,8 +79,17 @@ void purse() {
 }
 
 void items() {
-  fill(#F4EEFF);
-  for (PVector p : ground.keySet()) image(ground.get(p).getImage(), int(p.x) * 30 - 1, int(p.y) * 30 - 1);
+  for (PVector p : ground.keySet()) {
+    if (p.equals(player.coords())) fill(#95E1D3);
+    else {
+      fill(#F9F7F7);
+      drawSquare(p);
+      fill(#393E46, 180);
+    }
+    
+    drawSquare(p);
+    image(ground.get(p).getImage(), int(p.x) * 30 - 1, int(p.y) * 30 - 1);
+  }
 }
 
 void mouseWheel(MouseEvent event) {
