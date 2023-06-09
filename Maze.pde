@@ -78,6 +78,13 @@ boolean isDeadEnd(char[][] maze, PVector p) {
   return count == 3;
 }
 
+boolean isMonsterNext(char[][] maze, PVector p) {
+  int count = 0;
+  ArrayList<PVector> nearby = neighborCells(p, mazeSize, 1);
+  for (PVector n : nearby) count += maze[int(n.y)][int(n.x)] == 'm' ? 1 : 0;
+  return count > 0;
+}
+
 void drawSquare(float x, float y) {
   rect(int(x) * size, int(y) * size, size, size);
 }

@@ -11,7 +11,8 @@ void status() {
   text(player.frontBlock(), 8, 21);
 }
 
-void itemText(String s) {
+void writeText(String s) {
+  clearText();
   fill(0);
   textSize(30);
   textAlign(CENTER);
@@ -19,13 +20,16 @@ void itemText(String s) {
   textAlign(BASELINE);
 }
 
+void mobText(String s) {
+  writeText(s + " - click to attack");
+}
+
+void itemText(String s) {
+  writeText(s);
+}
+
 void interactable(String s, String option) {
-  clearText();
-  fill(0);
-  textSize(30);
-  textAlign(CENTER);
-  text(s + " - Press E to " + option, 400, 845);
-  textAlign(BASELINE);
+  writeText(s + " - Press E to " + option);
 }
 
 void clearText() {
@@ -74,7 +78,8 @@ void purse() {
   rect(350, 860, 250, 70);
   image(cS, 400, 866);
   fill(#222831);
-  textSize(50);
+  System.out.println();
+  textSize(max(10, 50 - max(0, String.valueOf(coin).length() - 4) * 10));
   text(coin, 455, 908);
 }
 

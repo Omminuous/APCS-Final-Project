@@ -9,15 +9,19 @@ public class Runner {
 
   public void move(char[][] maze, char k) {
     // movement logic
+    PImage img = down;
     switch (k) {
       case 'a':
         dir = new PVector(-1, 0);
+        img = left;
         break;
       case 'd':
         dir = new PVector(1, 0);
+        img = right;
         break;
       case 'w':
         dir = new PVector(0, -1);
+        img = up;
         break;
       case 's':
         dir = new PVector(0, 1);
@@ -26,16 +30,32 @@ public class Runner {
 
     // movement interactions
     if (moveAvaliable()) {
+      if (front() == 'm') {
+        health -= 0.5;
+        if (health <= 0) {
+          endScreen();
+          hudScreen = true;
+          surface.setTitle("Game Over");
+        }
+        return;
+      }
       maze[(int) runner.y][(int) runner.x] = ground.containsKey(runner) ? 'i' : 'c';
+      
       fill(#F4EEFF);
       rect(runner.x * 30, runner.y * 30, 30, 30);
       
       runner = new PVector(runner.x + dir.x, runner.y + dir.y);
-      if (maze[(int) runner.y][(int) runner.x] == 'o') coin += (int) (Math.random() * 100);
+      if (maze[(int) runner.y][(int) runner.x] == 'o') {
+        int multiplier = 1;
+        if (inventory[slot] != null && inventory[slot] != null && inventory[slot].getName().split(" ")[1].equals("amulet")) multiplier += rarityOrder.indexOf(inventory[slot].getName().split(" ")[0]) + 1;
+        coin += (int) (Math.random() * 100 * multiplier);
+      }
       maze[(int) runner.y][(int) runner.x] = 's';
-      fill(#95E1D3);
-      rect(runner.x * 30, runner.y * 30, 30, 30);
     }
+
+    fill(#F4EEFF);
+    rect(runner.x * 30, runner.y * 30, 30, 30);
+    image(img, runner.x * 30, runner.y * 30);
   }
 
   public char front() {
@@ -66,7 +86,6 @@ public class Runner {
     switch (front()) {
       case 'c':
         status = "FLOOR";
-
         break;
       case 'w':
         status = "WALL";
@@ -76,7 +95,7 @@ public class Runner {
         interactable("A glowing portal", "enter");
         break;
       case 'o':
-        status = "COIN";
+        status = "COINS";
         break;
       case 'i':
         status = "ITEM";
@@ -85,6 +104,11 @@ public class Runner {
       case 'h':
         status = "CHEST";
         interactable("A treasure chest", "open");
+        break;
+      case 'm':
+        String name = monsters.get(frontVector()).getType();
+        status = name.toUpperCase();
+        mobText(name);
         break;
       default:
         status = "UNKNOWN";
@@ -115,10 +139,19 @@ public class Runner {
         break;
     }
     
-    if (inventory[slot] != null && inventory[slot].getName().equals("uncommon potion")) {
-      health = min(3, health + 1);
-      inventory[slot] = null;
-      slots--;
+    if (inventory[slot] != null) {
+      switch (inventory[slot].getName()) {
+        case "legendary chest":
+          coin += (int) (Math.random() * 10000);
+          inventory[slot] = null;
+          slots--;
+          break;
+        case "uncommon potion":
+          health = min(3, health + 1);
+          inventory[slot] = null;
+          slots--;
+          break;
+      }
     }
   }
   
@@ -143,6 +176,13 @@ public class Runner {
     slots++;
     maze[int(p.y)][int(p.x)] = 'c';
     drawSquare(p);
+  }
+  
+  public void attack() {
+    if (front() != 'm') return;
+    int damage = 1;
+    if (inventory[slot] != null && inventory[slot].getName().split(" ")[1].equals("dagger")) damage += rarityOrder.indexOf(inventory[slot].getName().split(" ")[0]) + 1;
+    monsters.get(frontVector()).decreaseHealth(damage * 5, frontVector());
   }
   
   public void drop() {
@@ -170,6 +210,7 @@ public class Runner {
     if (menu) {
       if (k == 'y') {
         floor++;
+        health = min(health + 1, 3);
         generate();
         draw();
       }
