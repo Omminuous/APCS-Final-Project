@@ -1,6 +1,6 @@
 // Game variables
-float health = 3;
-boolean initial = true;
+float health;
+boolean initial;
 int floor;
 int coin;
 int slot = 0;
@@ -20,7 +20,7 @@ HashMap<PVector, Item> ground = new HashMap<>();
 HashMap<String, ArrayList<Item>> items = new HashMap<>();
 HashMap<String, Integer> rarity;
 ArrayList<String> rarityOrder;
-Item[] inventory = new Item[5];
+Item[] inventory;
 
 // Assets
 PFont font;
@@ -117,11 +117,20 @@ void setup() {
 void generate() {
   background(#F4EEFF);
   surface.setTitle("Dungeon - Floor " + floor);
+  
+  // set stats
+  health = 3;
+  initial = true;
+  slot = 0;
+  slots = 0;
+  cS = loadImage("assets/coin.png");
+  cS.resize(50, 50);
 
   // Maze setup + Destructuring
   Object[] m = generateMaze(mazeSize);
   maze = (char[][]) m[0];
   end = (int) m[1];
+  inventory = new Item[5];
 
   monsters = new HashMap<>();
   ground = new HashMap<>();
@@ -188,6 +197,7 @@ Item chest() {
 }
 
 void update() {
+  if (hudScreen) return;
   fill(#424874);
   for (int i = 0; i < mazeSize; i++) drawSquare(i, 0);  
   
