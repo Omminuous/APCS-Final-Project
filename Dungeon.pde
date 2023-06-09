@@ -240,7 +240,10 @@ void moveMonsters() {
 void keyPressed() {
   // regular input
   if (!hudScreen) {
-    if (Character.isDigit(key)) if (key > '0' && key < '6') slot = key - 49;
+    if (Character.isDigit(key)) {
+      if (key > '0' && key < '6') slot = key - 49;
+      inventory();
+    }
     switch (key) {
       case 'w':
       case 'a':

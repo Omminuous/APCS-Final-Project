@@ -78,7 +78,6 @@ void purse() {
   rect(350, 860, 250, 70);
   image(cS, 400, 866);
   fill(#222831);
-  System.out.println();
   textSize(max(10, 50 - max(0, String.valueOf(coin).length() - 4) * 10));
   text(coin, 455, 908);
 }
